@@ -42,7 +42,7 @@ namespace PgpCore.Tests
 
         public string PublicKeyFilePath => $"{KeyDirectory}{Constants.PUBLICKEYFILENAME}";
 
-        public string UserName => _userName != null ? _userName : $"{_uniqueIdentifier}@email.com" ;
+        public string UserName => _userName != null ? _userName : $"{_uniqueIdentifier} <{_uniqueIdentifier}@email.com>" ;
 
         public string Password => _password != null ? _password : _uniqueIdentifier;
 
