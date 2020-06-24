@@ -2436,22 +2436,26 @@ namespace PgpCore
                 secretOut = new ArmoredOutputStream(secretOut);
             }
 
-            PgpSecretKey secretKey = new PgpSecretKey(
-                PgpSignatureType,
-                PublicKeyAlgorithm,
-                publicKey,
-                privateKey,
-                DateTime.UtcNow,
-                identity,
-                SymmetricKeyAlgorithm,
-                passPhrase,
-                null,
-                null,
-                new SecureRandom()
-                //                ,"BC"
-                );
+            // importing key in gpg fails as public key is reported to be eg 10800 secs newer than the private key (= +03:00, which is my current local time offset)
+            // My understanding is that BouncyCastle assigns the utc time on the private key and the local time on the public key
+            // This problem is noticed both if we use DateTime.Now or DateTime.UtcNow as values for the time parameter
+            // To workaround it, I use the current time modified by the local offset, to send the utc datetime as Local
 
-                secretKey.Encode(secretOut);
+             PgpSecretKey secretKey = new PgpSecretKey(
+                certificationLevel: PgpSignatureType,
+                algorithm: PublicKeyAlgorithm,
+                pubKey: publicKey, 
+                privKey: privateKey,
+                time: DateTime.Now.Add(DateTimeOffset.Now.Offset * -1),
+                id: identity,
+                encAlgorithm: SymmetricKeyAlgorithm,
+                passPhrase: passPhrase,
+                hashedPackets: null,
+                unhashedPackets: null,
+                rand: new SecureRandom()                
+            );
+
+            secretKey.Encode(secretOut);
 
             secretOut.Dispose();
 
