@@ -19,7 +19,13 @@ namespace PgpCore.Tests
             PGP pgp = new PGP();
 
             // Act
-            pgp.GenerateKey(testFactory.PublicKeyFilePath, testFactory.PrivateKeyFilePath, testFactory.Password);
+            pgp.GenerateKey(
+                publicKeyFilePath: testFactory.PublicKeyFilePath,
+                privateKeyFilePath: testFactory.PrivateKeyFilePath,
+                username: testFactory.UserName,
+                password: testFactory.Password,
+                strength: 2048
+                );
 
             // Assert
             Assert.True(File.Exists(testFactory.PublicKeyFilePath));
